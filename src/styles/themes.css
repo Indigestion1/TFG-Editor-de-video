@@ -1,0 +1,40 @@
+/* styles.css */
+
+/* Light Theme */
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+body.light-mode .homePage {
+    background-color: #f0f0f0;
+    color: #000000;
+}
+
+body.light-mode button {
+    background-color: #dddddd;
+    color: #000000;
+    border: 1px solid #cccccc;
+}
+
+/* Dark Theme */
+body.dark-mode {
+    background-color: #2e2e2e; /* More grey */
+    color: #e0e1dd;
+}
+
+body.dark-mode .homePage {
+    background-color: #3a3a3a; /* More grey */
+    color: #e0e1dd;
+}
+
+body.dark-mode button {
+    background-color: #4a4a4a; /* More grey */
+    color: #e0e1dd;
+    border: 1px solid #5a5a5a; /* More grey */
+}
+
+body.dark-mode button:hover {
+    background-color: #5a5a5a; /* More grey */
+    border: 1px solid #4a4a4a; /* More grey */
+}

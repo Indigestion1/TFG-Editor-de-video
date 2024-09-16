@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Electron App</title>
-</head>
-<body>
-    <div id="root"></div>
-    <script src="dist/bundle.js"></script>
-</body>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Index</title>
+        <link rel="stylesheet" href="src/styles/themes.css"> <!-- Asegúrate de que la ruta sea correcta -->
+    </head>
+    <body class="dark-mode"> <!-- Añade la clase dark-mode aquí para probar -->
+        <div class="index">
+            <button id="newProjectBtn">Nuevo Proyecto</button>
+            <button id="openProjectBtn">Abrir Proyecto</button>
+            <!-- Add more elements as described above -->
+        </div>
+        <script>
+            document.getElementById('newProjectBtn').addEventListener('click', () => {
+                window.electron.send('onNewProject');
+            });
+    
+            document.getElementById('openProjectBtn').addEventListener('click', () => {
+                window.electron.send('onOpenProject');
+            });
+        </script>
+    </body>
 </html>

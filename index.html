@@ -13,6 +13,7 @@
             <!-- Add more elements as described above -->
         </div>
         <script>
+            console.log(window.electron); // Debería mostrar el objeto electron en la consola
             document.getElementById('newProjectBtn').addEventListener('click', () => {
                 window.electron.send('onNewProject');
             });

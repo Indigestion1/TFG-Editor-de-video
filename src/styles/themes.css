@@ -17,24 +17,30 @@ body.light-mode button {
     border: 1px solid #cccccc;
 }
 
-/* Dark Theme */
 body.dark-mode {
-    background-color: #2e2e2e; /* More grey */
+    background-color: #2e2e2e; 
     color: #e0e1dd;
 }
 
 body.dark-mode .homePage {
-    background-color: #3a3a3a; /* More grey */
+    background-color: #3a3a3a;
     color: #e0e1dd;
 }
 
 body.dark-mode button {
-    background-color: #4a4a4a; /* More grey */
+    background-color: #4a4a4a;
     color: #e0e1dd;
-    border: 1px solid #5a5a5a; /* More grey */
+    border: 1px solid #5a5a5a;
 }
 
 body.dark-mode button:hover {
-    background-color: #5a5a5a; /* More grey */
-    border: 1px solid #4a4a4a; /* More grey */
+    background-color: #5a5a5a;
+    border: 1px solid #4a4a4a;
+}
+.responsive-video {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 40%;
+    height: auto;
 }

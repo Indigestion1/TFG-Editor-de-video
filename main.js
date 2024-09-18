@@ -2,26 +2,6 @@ const { app, BrowserWindow, Menu, ipcMain, dialog} = require('electron');
 const { openExistingProject } = require('./src/services/ProjectHandle');
 const path = require('path');
 
-const projectState = {
-    videoPath: '',
-    edits: [],
-    currentTime: 0
-};
-
-function applyProjectState(state) {
-    projectState.videoPath = state.videoPath;
-    projectState.edits = state.edits;
-    projectState.currentTime = state.currentTime;
-
-    const videoElement = document.getElementById('video');
-    videoElement.src = projectState.videoPath;
-    videoElement.currentTime = projectState.currentTime;
-
-    // projectState.edits.forEach(edit => {
-    //     // Apply each edit to the video
-    // });
-}
-
 let mainWindow;
 
 function createWindow() {
@@ -37,6 +17,9 @@ function createWindow() {
     });
 
     mainWindow.loadFile('index.html');
+
+    //debugging
+    mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.on('did-finish-load', () => {
         const theme = 'dark'; // Default theme
@@ -95,9 +78,11 @@ function createWindow() {
     });
 }
 
-function loadHomeScreen() {
-    if(mainWindow) {
-        mainWindow.loadFile('src/Pages/HomePage.html');
+function loadHomeScreen(filePath) {
+    if (mainWindow) {
+        mainWindow.loadFile('src/pages/HomePage.html').then(() => {
+            mainWindow.webContents.send('load-video', filePath);
+        });
     }
 }
 
@@ -113,9 +98,8 @@ ipcMain.on('onNewProject', function () {
         if (!result.canceled) {
             const filePath = result.filePaths[0];
             openExistingProject(filePath)
-                .then(state => {
-                    applyProjectState(state);
-                    loadHomeScreen();
+                .then(filePath => {
+                    loadHomeScreen(filePath);
                 })
                 .catch(err => {
                     console.error(err);

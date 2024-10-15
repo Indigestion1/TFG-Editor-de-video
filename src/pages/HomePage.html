@@ -4,13 +4,41 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home Page</title>
-        <link rel="stylesheet" href="../styles/themes.css"> <!-- Ensure the path is correct -->
+        <link rel="stylesheet" href="../styles/themes.css">
     </head>
-    <body class="dark-mode"> <!-- Add the class dark-mode here to test -->
-        <div class="homePage">
-            <video id="video" class="responsive-video" controls>
-                Your browser does not support the video tag.
-            </video>
+    <body class="dark-mode">
+        <div class="grid-container">
+            <table class="layout-table">
+                <tr>
+                    <td colspan="2" >
+                        <video id="video" class="responsive-video" style="width: 70%; height: auto; " controls>
+                            Your browser does not support the video tag.
+                        </video>
+                    </td>
+                    <td colspan="2" class="video-cell">
+                        <canvas id="frameImage" style="width: 100%; height: auto;">
+                        </canvas>
+                    </td>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
+                    </td>
+                    <td>
+                        <select id="frameList" class="frame-list"></select>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="tools-cell">
+                        <div class="controls">
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
         </div>
         <script src="HomePage.js"></script>
     </body>

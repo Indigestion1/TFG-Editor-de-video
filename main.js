@@ -1,6 +1,9 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog} = require('electron');
 const { openExistingProject } = require('./src/services/ProjectHandle');
+const fs = require('fs');
 const path = require('path');
+const VideoEditor = require('./src/services/videoEditor');
+const { exec } = require('child_process');
 
 let mainWindow;
 
@@ -12,7 +15,8 @@ function createWindow() {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
-            nodeIntegration: false,
+            nodeIntegration: true,
+            
         },
     });
 
@@ -78,6 +82,23 @@ function createWindow() {
     });
 }
 
+function startFlaskServer() {
+    const scriptPath = path.join(__dirname, '../sam2/demo.py');
+    const scriptDir = path.dirname(scriptPath);
+
+    const flaskProcess = exec(`cd ${scriptDir} && python demo.py`, (error, stdout, stderr) => {
+        if(error) {
+            console.error('Failed to start Flask server:', error);
+            return;
+        }
+        console.log(`Flask server stdout: ${stdout}`);
+        console.error(`Flask server stderr: ${stderr}`);
+    });
+    flaskProcess.on('close', (code) => {
+        console.log(`Flask server exited with code ${code}`);
+    });
+}
+
 function loadHomeScreen(filePath) {
     if (mainWindow) {
         mainWindow.loadFile('src/pages/HomePage.html').then(() => {
@@ -85,6 +106,25 @@ function loadHomeScreen(filePath) {
         });
     }
 }
+
+
+
+app.on('ready', () => {
+    startFlaskServer();
+    createWindow()
+});
+
+app.on('window-all-closed', function () {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', function () {
+    if (mainWindow === null) {
+        createWindow();
+    }
+});
 
 ipcMain.on('onNewProject', function () {
     dialog.showOpenDialog({
@@ -109,22 +149,32 @@ ipcMain.on('onNewProject', function () {
         console.error('Failed to open file:', err);
     });
 });
+
 ipcMain.on('onOpenProject', function () {
     ipcMain.emit('onNewProject');
 });
 
-app.on('ready', createWindow);
-
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
-        app.quit();
+ipcMain.handle('trim-video', async (event, inputPath, outputPath, startTime, duration) => {
+    try {
+        const result = await VideoEditor.trimVideo(inputPath, outputPath, startTime, duration);
+        return result;
+    } catch (error) {
+        console.error(error);
+        throw error;
     }
 });
 
-app.on('activate', function () {
-    if (mainWindow === null) {
-        createWindow();
-    }
+ipcMain.on('save-image', async (event, dataUrl) => {
+    const savePath = path.join(__dirname, '/data/Videos/image.png');
+    const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+
+    fs.writeFile(savePath, base64Data, 'base64', (err) => {
+        if (err) {
+            console.error('Failed to save image:', err);
+        } else {
+            console.log('Image saved successfully!');
+        }
+    });
 });
 
 module.exports = { loadHomeScreen };

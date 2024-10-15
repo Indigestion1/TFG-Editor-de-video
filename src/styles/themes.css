@@ -1,6 +1,4 @@
-/* styles.css */
 
-/* Light Theme */
 body.light-mode {
     background-color: #ffffff;
     color: #000000;
@@ -37,10 +35,59 @@ body.dark-mode button:hover {
     background-color: #5a5a5a;
     border: 1px solid #4a4a4a;
 }
-.responsive-video {
-    position: absolute;
-    top: 10%;
-    right: 10%;
-    width: 40%;
+/* .responsive-video {
+    width: 100%;
+    max-width: 90%;
     height: auto;
+    display: block;
+    margin: 0 auto;
+} */
+.grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.layout-table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.layout-table td {
+    padding: 5px;
+    box-sizing: border-box;
+    width: 33.33%;
+}
+
+.video-cell {
+    justify-content: center;
+    align-items: right;
+}
+
+.responsive-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+}
+
+.video-track {
+    width: 100%;
+    height: 100px;
+    background-color: none;
+}
+
+.tools-cell {
+    text-align: center;
+}
+
+.controls {
+    display: inline-block;
+    text-align: left;
+}
+
+.controls div {
+    margin-bottom: 10px;
 }

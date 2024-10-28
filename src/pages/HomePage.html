@@ -5,30 +5,38 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home Page</title>
         <link rel="stylesheet" href="../styles/themes.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     </head>
     <body class="dark-mode">
         <div class="grid-container">
             <table class="layout-table">
                 <tr>
-                    <td colspan="2" >
-                        <video id="video" class="responsive-video" style="width: 70%; height: auto; " controls>
-                            Your browser does not support the video tag.
-                        </video>
+                    <td colspan="2" class="video-cell" style="width: 50%;">
+                        <canvas id="frameImage" style="width: 100%; height: auto;"></canvas>
                     </td>
-                    <td colspan="2" class="video-cell">
-                        <canvas id="frameImage" style="width: 100%; height: auto;">
-                        </canvas>
-                    </td>
+                    <td colspan="2" style="width: 50%;">
+                        <img id="resultImage" alt="Result Image" style="width: 100%; height: auto;">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="3">
                         <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
-                    </td>
+                    </td> 
+                </tr>
+                <tr>
                     <td>
                         <select id="frameList" class="frame-list"></select>
                     </td>
+                    <td>
 
+                    </td>
+                    <td>
+                        <select id="maskSelectorContainer" class="selectpicker" value="" multiple data-live-search="true"></select>
+                    </td>
                 </tr>
                 <tr>
                     <td></td>

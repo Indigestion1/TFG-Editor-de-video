@@ -4,8 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const VideoEditor = require('./src/services/videoEditor');
 const { exec } = require('child_process');
+var flaskProcess = null;
 
 let mainWindow;
+
+var frameIndex = 0;
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -83,10 +86,10 @@ function createWindow() {
 }
 
 function startFlaskServer() {
-    const scriptPath = path.join(__dirname, '../sam2/demo.py');
+    const scriptPath = path.join(__dirname, '../sam2/server.py');
     const scriptDir = path.dirname(scriptPath);
 
-    const flaskProcess = exec(`cd ${scriptDir} && python demo.py`, (error, stdout, stderr) => {
+    flaskProcess = exec(`cd ${scriptDir} && python server.py`, (error, stdout, stderr) => {
         if(error) {
             console.error('Failed to start Flask server:', error);
             return;
@@ -99,6 +102,7 @@ function startFlaskServer() {
     });
 }
 
+
 function loadHomeScreen(filePath) {
     if (mainWindow) {
         mainWindow.loadFile('src/pages/HomePage.html').then(() => {
@@ -107,11 +111,37 @@ function loadHomeScreen(filePath) {
     }
 }
 
-
+function deleteVideoFrames() {
+    const directory = path.join(__dirname, '/data/Videos');
+    fs.readdir(directory, (err, files) => {
+        if (err) {
+            console.error('Failed to read directory:', err);
+            return;
+        }
+        files.forEach(file => {
+            if (file.endsWith('.png')) {
+                fs.unlink(path.join(directory, file), err => {
+                    if (err) {
+                        console.error('Failed to delete file:', err);
+                    } else {
+                        console.log(`Deleted file: ${file}`);
+                    }
+                });
+            }
+        });
+    });
+}
 
 app.on('ready', () => {
     startFlaskServer();
     createWindow()
+});
+
+app.on('before-quit', () => {
+    deleteVideoFrames();
+    if (flaskProcess) {
+        flaskProcess.kill('SIGINT');
+    }
 });
 
 app.on('window-all-closed', function () {
@@ -165,14 +195,13 @@ ipcMain.handle('trim-video', async (event, inputPath, outputPath, startTime, dur
 });
 
 ipcMain.on('save-image', async (event, dataUrl) => {
-    const savePath = path.join(__dirname, '/data/Videos/image.png');
+    const savePath = path.join(__dirname, `/data/Videos/image${frameIndex}.png`);
+    frameIndex++;
     const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
 
     fs.writeFile(savePath, base64Data, 'base64', (err) => {
         if (err) {
             console.error('Failed to save image:', err);
-        } else {
-            console.log('Image saved successfully!');
         }
     });
 });

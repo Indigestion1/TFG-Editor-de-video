@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const maskSelectorContainer = document.getElementById('maskSelectorContainer');
     const frameImage = document.getElementById('frameImage');
     const context2 = frameImage.getContext('2d');
+    const deleteMaskButton = document.getElementById('DeleteMask');
+    const maskModal = document.getElementById('maskModal');
+    const closeModal = document.getElementById('closeModal');
+    const confirmDeleteMaskButton = document.getElementById('confirmDeleteMask');
+    const maskSelectorModal = document.getElementById('maskSelectorModal');
+    const closeDeleteMaskModal = document.getElementById('closeDeleteMask');
     var natural_width;
     var natural_height;
     var frameIndex = 0;
@@ -51,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.electron.send('save-image', frame, frameIndex);
                     frameIndex++;
                     tempVideo.currentTime += 1/24; 
-                    setTimeout(capture, 20); // Espera un poco antes de capturar el siguiente frame
+                    setTimeout(capture, 50); // Espera un poco antes de capturar el siguiente frame
                     if(first) { 
                         first = false;
                         sendFrameToServer(0);
@@ -128,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const scaleY = natural_height / rect.height;
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
-        console.log(`Click at (${x}, ${y})`);
         var imagePath =  `../TFG-Editor-de-video/data/Videos\\image` + frameIndex + '.png';
         data = {
             x: x,
@@ -147,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = URL.createObjectURL(blob);
             resultImage.src = url;
             //var image_path2 =   `../TFG-Editor-de-video/data/Videos\image` + frameIndex + '.png';
-                get_masks(data.$image_path);
+                get_masks(data.image_path);
             })
         .catch((error) => {
             console.error('Error loading image:', error);
@@ -218,5 +223,36 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error:', error));
     }
-       
+    
+    deleteMaskButton.addEventListener('click', () => {
+        maskModal.style.display = 'block';
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target === maskModal) {
+            maskModal.style.display = 'none';
+        }
+    });
+    confirmDeleteMaskButton.addEventListener('click', () => {
+        const maskSelector = document.getElementById('maskSelectorContainer');
+        const selectedMasks = Array.from(maskSelector.selectedOptions).map(option => parseInt(option.value));
+        const data = {
+            image_path: `../TFG-Editor-de-video/data/Videos\\image${frameIndex}.png`,
+            mask: selectedMasks
+        };
+        fetch('http://localhost:5000/Mask', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => get_masks(data.image_path))
+        .catch((error) => {
+            console.error('Error deleting mask:', error);
+        });
+        maskModal.style.display = 'none';
+    });
+    closeModal.addEventListener('click', () => {
+        maskModal.style.display = 'none';
+    });
 });

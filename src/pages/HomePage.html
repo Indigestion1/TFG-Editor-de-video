@@ -29,13 +29,22 @@
                 </tr>
                 <tr>
                     <td>
-                        <select id="frameList" class="frame-list"></select>
+                        <select id="frameList" class="selectpicker" value=""></select>
                     </td>
                     <td>
 
                     </td>
                     <td>
-                        <select id="maskSelectorContainer" class="selectpicker" value="" multiple data-live-search="true"></select>
+                        <select id="maskSelectorContainer" class="selectpicker" value="" multiple data-live-search="false"></select>
+                        <button id="DeleteMask" class="btn btn-info">Borrar máscaras</button>
+                        <div id="maskModal" class="modal">
+                            <div class="modal-content">
+                                <span class="closeDeleteMask">&times;</span>
+                                <h2>Selecciona una máscara para eliminar</h2>
+                                <select id="maskSelectorModal" class="selectpicker" multiple data-live-search="true"></select>
+                                <button id="confirmDeleteMask" class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>

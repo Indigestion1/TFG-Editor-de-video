@@ -102,6 +102,16 @@ function startFlaskServer() {
     });
 }
 
+function stopFlaskServer() {
+    if (flaskProcess) {
+        flaskProcess.kill('SIGINT');
+        console.log('Sent SIGINT to Flask server');
+        flaskProcess = null; // Ensure the reference is cleared
+    } else {
+        console.log('Flask server not running');
+    }
+}
+
 
 function loadHomeScreen(filePath) {
     if (mainWindow) {
@@ -137,11 +147,11 @@ app.on('ready', () => {
     createWindow()
 });
 
-app.on('before-quit', () => {
+app.on('before-quit', (event) => {
+    event.preventDefault(); // Prevent the default behavior
     deleteVideoFrames();
-    if (flaskProcess) {
-        flaskProcess.kill('SIGINT');
-    }
+    //console.log(flaskProcess);
+    stopFlaskServer();
 });
 
 app.on('window-all-closed', function () {

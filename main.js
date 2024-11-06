@@ -102,16 +102,6 @@ function startFlaskServer() {
     });
 }
 
-function stopFlaskServer() {
-    if (flaskProcess) {
-        flaskProcess.kill('SIGINT');
-        console.log('Sent SIGINT to Flask server');
-        flaskProcess = null; // Ensure the reference is cleared
-    } else {
-        console.log('Flask server not running');
-    }
-}
-
 
 function loadHomeScreen(filePath) {
     if (mainWindow) {
@@ -129,7 +119,7 @@ function deleteVideoFrames() {
             return;
         }
         files.forEach(file => {
-            if (file.endsWith('.png')) {
+            if (file.endsWith('.jpeg')) {
                 fs.unlink(path.join(directory, file), err => {
                     if (err) {
                         console.error('Failed to delete file:', err);
@@ -148,10 +138,10 @@ app.on('ready', () => {
 });
 
 app.on('before-quit', (event) => {
-    event.preventDefault(); // Prevent the default behavior
+    fetch('http://localhost:500/killServer', {
+        method: 'POST'
+    });
     deleteVideoFrames();
-    //console.log(flaskProcess);
-    stopFlaskServer();
 });
 
 app.on('window-all-closed', function () {
@@ -205,9 +195,9 @@ ipcMain.handle('trim-video', async (event, inputPath, outputPath, startTime, dur
 });
 
 ipcMain.on('save-image', async (event, dataUrl) => {
-    const savePath = path.join(__dirname, `/data/Videos/image${frameIndex}.png`);
+    const savePath = path.join(__dirname, `/data/Videos/image${frameIndex}.jpeg`);
     frameIndex++;
-    const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+    const base64Data = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
 
     fs.writeFile(savePath, base64Data, 'base64', (err) => {
         if (err) {

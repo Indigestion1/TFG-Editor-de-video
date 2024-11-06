@@ -127,3 +127,11 @@ body.dark-mode button:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
+.selectors{
+    font-family: sans-serif;
+    font-size: 10px;
+    padding: 5px;
+    height: auto;
+    
+}

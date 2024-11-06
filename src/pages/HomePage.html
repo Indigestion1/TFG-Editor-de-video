@@ -4,21 +4,38 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home Page</title>
-        <link rel="stylesheet" href="../styles/themes.css">
+        <link rel="stylesheet" href="../styles/styles.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+        <style>
+            .selectors {
+                font-family: sans-serif;
+                font-size: 14px;
+                padding: 5px;
+                width: 50%;
+                height: auto;
+            }
+            .bootstrap-select .dropdown-toggle .filter-option {
+                font-family: sans-serif;
+                font-size: 14px;
+            }
+            .bootstrap-select .dropdown-menu {
+                font-family: sans-serif;
+                font-size: 14px;
+            }
+        </style>
     </head>
     <body class="dark-mode">
         <div class="grid-container">
             <table class="layout-table">
                 <tr>
-                    <td colspan="2" class="video-cell" style="width: 50%;">
-                        <canvas id="frameImage" style="width: 100%; height: auto;"></canvas>
+                    <td colspan="2" class="video-cell" style="width: 50%; align-items: center;">
+                        <canvas id="frameImage" style="width: 50%; height: auto;"></canvas>
                     </td>
-                    <td colspan="2" style="width: 50%;">
+                    <td colspan="2" style="width: 100%; align-items: center;">
                         <img id="resultImage" alt="Result Image" style="width: 100%; height: auto;">
                     </td>
                 </tr>
@@ -29,22 +46,14 @@
                 </tr>
                 <tr>
                     <td>
-                        <select id="frameList" class="selectpicker" value=""></select>
+                        <select id="frameList" class="selectpicker selectors" value=""></select>
                     </td>
                     <td>
 
                     </td>
                     <td>
-                        <select id="maskSelectorContainer" class="selectpicker" value="" multiple data-live-search="false"></select>
+                        <select id="maskSelectorContainer" class="selectpicker selectors" style="font-family: sans-serif; font-size: 10px; padding: 5px; width:70%; height: auto;" value="" title= "Seleccione las máscaras" multiple data-live-search="false"></select>
                         <button id="DeleteMask" class="btn btn-info">Borrar máscaras</button>
-                        <div id="maskModal" class="modal">
-                            <div class="modal-content">
-                                <span class="closeDeleteMask">&times;</span>
-                                <h2>Selecciona una máscara para eliminar</h2>
-                                <select id="maskSelectorModal" class="selectpicker" multiple data-live-search="true"></select>
-                                <button id="confirmDeleteMask" class="btn btn-danger">Eliminar</button>
-                            </div>
-                        </div>
                     </td>
                 </tr>
                 <tr>

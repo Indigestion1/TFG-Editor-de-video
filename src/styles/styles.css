@@ -27,21 +27,14 @@ body.dark-mode .homePage {
 
 body.dark-mode button {
     background-color: #4a4a4a;
-    color: #e0e1dd;
-    border: 1px solid #5a5a5a;
+    color: #4a4a4a;
 }
 
 body.dark-mode button:hover {
-    background-color: #5a5a5a;
+    /*background-color: #5a5a5a;*/
     border: 1px solid #4a4a4a;
 }
-/* .responsive-video {
-    width: 100%;
-    max-width: 90%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-} */
+
 .grid-container {
     display: flex;
     justify-content: center;
@@ -63,7 +56,8 @@ body.dark-mode button:hover {
 
 .video-cell {
     justify-content: center;
-    align-items: right;
+    align-items: center;
+    /*display: flex;*/
 }
 
 .responsive-video {
@@ -128,10 +122,151 @@ body.dark-mode button:hover {
     cursor: pointer;
 }
 
-.selectors{
-    font-family: sans-serif;
-    font-size: 10px;
+.selectpicker {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+}
+.selectpicker.selectors {
+    max-height: none !important;
+    /* overflow: visible !important; */
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+}
+.mask-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    color: #5a5a5a;
+    cursor: pointer;
+    background-color: #e0e1dd;
+    transition: background-color 0.3s;
+}
+
+/* Color de fondo al pasar el ratón por encima */
+.mask-item:hover {
+    background-color: #6a6a6a;
+}
+
+/* Color de fondo para las máscaras seleccionadas */
+.mask-item.selected {
+    background-color: #5a5a5a;
+    color: #e0e1dd;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+} 
+
+.dropdown-toggle {
+    background-color: #e0e1dd !important;
+    color: #4a4a4a;
+    border: 1px solid #4a4a4a;
+    padding: 10px;
+    cursor: pointer;
+    border-radius:5px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #e0e1dd !important;
+    border: 1px solid #4a4a4a;
+    padding: 10px;
+    z-index: 1000;
+    max-height: 200px;
+}
+
+
+.dropdown-menu-mask {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.dropdown-menu.show {
+    display: block;
+    width: 100%;
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 5px;
-    height: auto;
-    
+    cursor: pointer;
+    color: #5a5a5a;
+}
+
+.dropdown-item:hover {
+    background-color: #4a4a4a;
+}
+
+.delete-button {
+    background: none !important;
+    border: none !important;
+    padding-left: 2vw;
+    color: red !important;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.delete-button:hover {
+    color: darkred;
+}
+
+/* Estilo para la barra de desplazamiento vertical */
+::-webkit-scrollbar {
+    width: 4px; /* Ancho de la barra de desplazamiento */
+}
+
+/* Estilo para la pista de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+    background: #e0e1dd; /* Color de fondo de la pista */
+    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
+}
+
+/* Estilo para el pulgar de la barra de desplazamiento */
+::-webkit-scrollbar-thumb {
+    background: #6a6a6a; /* Color del pulgar */
+    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
+}
+
+/* Estilo para el pulgar de la barra de desplazamiento al pasar el ratón por encima */
+::-webkit-scrollbar-thumb:hover {
+    background: #6a6a6a; /* Color del pulgar al pasar el ratón por encima */
+}
+
+/* Estilo para la barra de desplazamiento horizontal */
+::-webkit-scrollbar-horizontal {
+    height: 4px; /* Altura de la barra de desplazamiento horizontal */
+}
+
+/* Estilo para la pista de la barra de desplazamiento horizontal */
+::-webkit-scrollbar-track-horizontal {
+    background: #2a2a2a; /* Color de fondo de la pista horizontal */
+    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
+}
+
+/* Estilo para el pulgar de la barra de desplazamiento horizontal */
+::-webkit-scrollbar-thumb-horizontal {
+    background: #4a4a4a; /* Color del pulgar horizontal */
+    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
+}
+
+/* Estilo para el pulgar de la barra de desplazamiento horizontal al pasar el ratón por encima */
+::-webkit-scrollbar-thumb-horizontal:hover {
+    background: #6a6a6a; /* Color del pulgar horizontal al pasar el ratón por encima */
 }

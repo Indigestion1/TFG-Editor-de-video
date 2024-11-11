@@ -13,17 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const maskSelectorContainer = document.getElementById('maskSelectorContainer');
     const frameImage = document.getElementById('frameImage');
     const context2 = frameImage.getContext('2d');
-    // const deleteMaskButton = document.getElementById('DeleteMask');
-    // const maskModal = document.getElementById('maskModal');
-    // const closeModal = document.getElementById('closeModal');
-    // const confirmDeleteMaskButton = document.getElementById('confirmDeleteMask');
-    // const maskSelectorModal = document.getElementById('maskSelectorModal');
-    // const closeDeleteMaskModal = document.getElementById('closeDeleteMask');
+    const dropdownButton = document.getElementById('dropdownButton');
     var natural_width;
     var natural_height;
     var frameIndex = 0;
     var first = true;
+    var masks;
     //var maskIndex = 0;
+    $(document).ready(() => {
+        $('.selectpicker').selectpicker({
+            dropupAuto: false
+        }); // Inicializa el bootstrap-select
+        
+    });
+    
+    const updateFrameList = () => {
+        frameList.innerHTML = '';
+        frames.forEach((frame, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Frame ${index}`;
+            frameList.appendChild(option);
+        });
+        $('.selectpicker').selectpicker('refresh'); // Refresca el select después de actualizarlo
+    };
 
     const captureFrames = (filePath) => {
         return new Promise((resolve) => {
@@ -40,24 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const capture = () => {
                    
-                        frameIndex = 0;
-                        if (tempVideo.currentTime >= tempVideo.duration) {
-                            resolve();
-                            return;
-                        } else {
-                            setTimeout(() => {
-                                tempVideo.currentTime += 1/24;
-                                capture();
-                            }, 0);
-                        }
-                    
+                    frameIndex = 0;
+                    if (tempVideo.currentTime >= tempVideo.duration) {
+                        resolve();
+                        return;
+                    }                    
                     context.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
                     const frame = canvas.toDataURL('image/jpeg', 1.0);
                     frames.push(frame);
                     window.electron.send('save-image', frame, frameIndex);
                     frameIndex++;
-                    tempVideo.currentTime += 1/24; 
-                    setTimeout(capture, 100); // Espera un poco antes de capturar el siguiente frame
+                    setTimeout(() => {
+                        capture();
+                        tempVideo.currentTime += 1/24;
+                    }, 100);
                     if(first) { 
                         first = false;
                         sendFrameToServer(0);
@@ -76,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ image_path: `../TFG-Editor-de-video/data/Videos\\image${index}.jpeg` })
-            }).then(response => get_masks(`../TFG-Editor-de-video/data/Videos\\image${index}.jpeg`));
+                body: JSON.stringify({ image_path: `../TFG-Editor-de-video/data/Videos\\${index}.jpeg` })
+            }).then(response => get_masks(`../TFG-Editor-de-video/data/Videos\\${index}.jpeg`));
         } catch (error) {
             console.error('Error sending frame to server:', error);
         }
@@ -103,16 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    const updateFrameList = () => {
-        frameList.innerHTML = '';
-        frames.forEach((frame, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = `Frame ${index}`;
-            frameList.appendChild(option);
-        });
-    };
-
     if (window.electron) {
         window.electron.receive('load-video', async (filePath) => {
             await captureFrames(filePath);
@@ -134,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scaleY = natural_height / rect.height;
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
-        var imagePath =  `../TFG-Editor-de-video/data/Videos\\image` + frameIndex + '.jpeg';
+        var imagePath =  `../TFG-Editor-de-video/data/Videos\\` + frameIndex + '.jpeg';
         data = {
             x: x,
             y: y,
@@ -151,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(blob => {
             const url = URL.createObjectURL(blob);
             resultImage.src = url;
-            //var image_path2 =   `../TFG-Editor-de-video/data/Videos\image` + frameIndex + '.jpeg';
+            //var image_path2 =   `../TFG-Editor-de-video/data/Videos\` + frameIndex + '.jpeg';
                 get_masks(data.image_path);
             })
         .catch((error) => {
@@ -159,15 +158,38 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     })
 
+    dropdownButton.addEventListener('click', () => {
+        maskSelectorContainer.classList.toggle('show');
+    });
 
-    maskSelectorContainer.addEventListener('change', () => {
-        const maskSelector = document.getElementById('maskSelectorContainer');
-        const selectedMasks = Array.from(maskSelector.selectedOptions).map(option => parseInt(option.value));
+    maskSelectorContainer.addEventListener('click', (event) => {
+        // Verifica si se hizo clic en un elemento de máscara
+        const maskItem = event.target.closest('.mask-item');
+        if (!maskItem) return; // Si no se hizo clic en un elemento de máscara, salir
+
+        // Alternar la clase de selección
+        if(!maskItem.classList.contains('selected')) {
+            maskItem.classList.toggle('selected');
+            maskItem.style.backgroundColor = masks[maskItem.getAttribute('data-value')][0];
+            maskItem.style.color = '#e0e1dd';
+        }
+        else {
+            maskItem.classList.remove('selected');
+            maskItem.style.backgroundColor = '#e0e1dd';
+            maskItem.style.color = '#5a5a5a';
+        }
+
+        // Recopilar todas las máscaras seleccionadas
+        const selectedMasks = Array.from(maskSelectorContainer.querySelectorAll('.mask-item.selected'))
+            .map(item => parseInt(item.getAttribute('data-value')));
+
+        // Preparar los datos para enviar a la API
         const data = {
-            image_path: `../TFG-Editor-de-video/data/Videos\\image${frameIndex}.jpeg`,
+            image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`,
             mask: selectedMasks
         };
-    
+
+        // Hacer la solicitud para aplicar las máscaras seleccionadas
         fetch('http://localhost:5000/applyMask', {
             method: 'POST',
             headers: {
@@ -175,39 +197,43 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify(data)
         })
-        .then(response => response.blob()) // Cambiar a .blob() para manejar la imagen
+        .then(response => response.blob())
         .then(blob => {
             const url = URL.createObjectURL(blob);
-            resultImage.src = url; // Mostrar la imagen en el mismo lugar que la imagen de predictImage
-            console.log('Mask applied and image updated');
+            resultImage.src = url; // Mostrar la imagen actualizada
         })
         .catch((error) => {
-            console.error('Error applying mask:', error);
+            console.error('Error al aplicar las máscaras:', error);
         });
     });
 
 
-    function addOption(value, text) {
-        const option = document.createElement('option');
-        option.value = value; // El valor que llevará la opción
-        option.textContent = text; // El texto que se mostrará
-        maskSelectorContainer.appendChild(option); // Agregar la opción al <select>
-    }
-    
-    function updateOptionsBasedOnNumber(number) {
-        console.log('Number:', number);
-        // Primero, limpia las opciones actuales
-        maskSelectorContainer.innerHTML = '';
-    
-        // Agrega una opción por defecto
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-    
-        // Basado en el número, agrega diferentes opciones
-        for (let i = 0; i <= number-1; i++) {
-           addOption(i, `Máscara ${i+1}`);
-        }
-        $('.selectpicker').selectpicker('refresh');
+    function addOption(value, text, color) {
+        const maskItem = document.createElement('div');
+        maskItem.classList.add('mask-item');
+        maskItem.setAttribute('data-value', value);
+
+        const itemText = document.createElement('span');
+        itemText.textContent = text;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = 'X';
+
+        // Lógica para borrar el elemento
+        deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evitar que se cierre el menú al hacer clic
+            maskItem.remove(); // Eliminar el elemento de la lista
+            deleteMask(value);
+            // Aquí puedes manejar cualquier lógica adicional para borrar la máscara
+        });
+
+        
+        maskItem.style.borderLeft = `4px solid ${color}`;
+
+        maskItem.appendChild(itemText);
+        maskItem.appendChild(deleteButton);
+        maskSelectorContainer.appendChild(maskItem);
     }
 
     function get_masks(image_path) {
@@ -219,40 +245,39 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            updateOptionsBasedOnNumber(data.masks);
+            masks = data.masks;
+            maskSelectorContainer.innerHTML = '';
+            masks.forEach((mask, index) => {
+                const color = mask[0]; // Obtener el color de la máscara
+                addOption(index, `Máscara ${index + 1}`, color);
+            });
         })
         .catch(error => console.error('Error:', error));
     }
     
-    // deleteMaskButton.addEventListener('click', () => {
-    //     maskModal.style.display = 'block';
-    // });
-    // window.addEventListener('click', (event) => {
-    //     if (event.target === maskModal) {
-    //         maskModal.style.display = 'none';
-    //     }
-    // });
-    // confirmDeleteMaskButton.addEventListener('click', () => {
-    //     const maskSelector = document.getElementById('maskSelectorContainer');
-    //     const selectedMasks = Array.from(maskSelector.selectedOptions).map(option => parseInt(option.value));
-    //     const data = {
-    //         image_path: `../TFG-Editor-de-video/data/Videos\\image${frameIndex}.jpeg`,
-    //         mask: selectedMasks
-    //     };
-    //     fetch('http://localhost:5000/Mask', {
-    //         method: 'DELETE',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(data)
-    //     })
-    //     .then(response => get_masks(data.image_path))
-    //     .catch((error) => {
-    //         console.error('Error deleting mask:', error);
-    //     });
-    //     maskModal.style.display = 'none';
-    // });
-    // closeModal.addEventListener('click', () => {
-    //     maskModal.style.display = 'none';
-    // });
+    function deleteMask(maskId) {
+        const data = {
+            image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`,
+            mask_index: maskId
+        };
+    
+        fetch('http://localhost:5000/mask', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                get_masks(data.image_path); // Actualizar la lista de máscaras
+                
+            } else {
+                console.error('Error al eliminar la máscara:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error al hacer la solicitud de eliminación:', error);
+        });
+    }
 });

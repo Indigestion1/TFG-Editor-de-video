@@ -14,17 +14,32 @@
             .selectors {
                 font-family: sans-serif;
                 font-size: 14px;
-                padding: 5px;
-                width: 50%;
+                /*padding: 5px;*/
+                width: 100%;
                 height: auto;
             }
             .bootstrap-select .dropdown-toggle .filter-option {
                 font-family: sans-serif;
                 font-size: 14px;
+                margin-right: 2vw;
             }
             .bootstrap-select .dropdown-menu {
                 font-family: sans-serif;
                 font-size: 14px;
+            }
+            .image-container {
+                width: 50vw !important;
+                height: 50vh; /* Altura fija para el contenedor de la imagen en relación con la altura de la pantalla */
+                background-color: #111111; /* Color de fondo */
+                border: 2px solid #f0f0f0; /* Borde */
+                display: flex;
+                margin-top: 10px !important;
+                margin-right: 10px !important;
+            }
+            .image-container img {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
             }
         </style>
     </head>
@@ -32,11 +47,29 @@
         <div class="grid-container">
             <table class="layout-table">
                 <tr>
-                    <td colspan="2" class="video-cell" style="width: 50%; align-items: center;">
-                        <canvas id="frameImage" style="width: 50%; height: auto;"></canvas>
+                    <td colspan="1" class="video-cell">
+                        <canvas id="frameImage" style="width: 100% !important; height: auto;"></canvas>
                     </td>
-                    <td colspan="2" style="width: 100%; align-items: center;">
-                        <img id="resultImage" alt="Result Image" style="width: 100%; height: auto;">
+                    <td></td>
+                    <td colspan="3" class="image-container">
+                        <img id="resultImage" alt="Result Image">
+                    </td>
+                </tr>
+            <tr></tr>
+            <tr>
+                <tr>
+                    <td>
+                        <select id="frameList" class="selectpicker selectors" value=""></select>
+                    </td>
+
+                    <td></td>
+
+                    <td style="text-align: right;">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" id="dropdownButton">Seleccionar Máscaras</button>
+                            <div class="dropdown-menu-mask" id="maskSelectorContainer"></div>
+                        </div>
+                        <!--select id="maskSelectorContainer" class="selectpicker selectors" style="font-family: sans-serif; font-size: 10px; padding: 5px; width:70%; height: auto;" value="" title="Seleccione las máscaras" multiple data-live-search="false"></select-->
                     </td>
                 </tr>
                 <tr>
@@ -44,28 +77,9 @@
                         <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
                     </td> 
                 </tr>
-                <tr>
-                    <td>
-                        <select id="frameList" class="selectpicker selectors" value=""></select>
-                    </td>
-                    <td>
-
-                    </td>
-                    <td>
-                        <select id="maskSelectorContainer" class="selectpicker selectors" style="font-family: sans-serif; font-size: 10px; padding: 5px; width:70%; height: auto;" value="" title= "Seleccione las máscaras" multiple data-live-search="false"></select>
-                        <button id="DeleteMask" class="btn btn-info">Borrar máscaras</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="tools-cell">
-                        <div class="controls">
-                        </div>
-                    </td>
-                    <td></td>
-                </tr>
             </table>
         </div>
+        
         <script src="HomePage.js"></script>
     </body>
 </html>

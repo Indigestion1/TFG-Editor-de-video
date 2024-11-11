@@ -138,9 +138,21 @@ app.on('ready', () => {
 });
 
 app.on('before-quit', (event) => {
-    fetch('http://localhost:500/killServer', {
+    fetch('http://localhost:5000/killServer', {
         method: 'POST'
+    })
+    .then(response => {
+        console.log('Server kill request sent');
+    })
+    .catch(error => {
+        if (error.code === 'ECONNRESET') {
+            console.log('Server connection reset as expected.');
+        } else {
+            console.log(error.code);
+            console.error('Error sending kill server request:', error);
+        }
     });
+    console.log('Flask server killed');
     deleteVideoFrames();
 });
 
@@ -195,7 +207,7 @@ ipcMain.handle('trim-video', async (event, inputPath, outputPath, startTime, dur
 });
 
 ipcMain.on('save-image', async (event, dataUrl) => {
-    const savePath = path.join(__dirname, `/data/Videos/image${frameIndex}.jpeg`);
+    const savePath = path.join(__dirname, `/data/Videos/${frameIndex}.jpeg`);
     frameIndex++;
     const base64Data = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
 

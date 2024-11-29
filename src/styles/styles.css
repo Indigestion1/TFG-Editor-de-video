@@ -186,6 +186,7 @@ body.dark-mode button:hover {
 
 
 .dropdown-menu-mask {
+    display: none;
     position: absolute;
     width: 100%;
     padding: 10px;
@@ -193,6 +194,11 @@ body.dark-mode button:hover {
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.dropdown-menu-mask.show {
+    display: block;
+    width: 100%;
 }
 
 .dropdown-menu.show {
@@ -269,4 +275,28 @@ body.dark-mode button:hover {
 /* Estilo para el pulgar de la barra de desplazamiento horizontal al pasar el ratón por encima */
 ::-webkit-scrollbar-thumb-horizontal:hover {
     background: #6a6a6a; /* Color del pulgar horizontal al pasar el ratón por encima */
+}
+.color-button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pickr .pcr-button::before {
+    display: none;
+    background: none !important;
+    border: none !important;
+}
+.pickr .pcr-button::after {
+    border: 1px solid #4a4a4a !important;
+    border-radius: 50% !important;
+}
+
+.pcr-app{
+    background-color: rgba(255, 255, 255, 1) !important;
 }

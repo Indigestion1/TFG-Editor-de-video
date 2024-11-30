@@ -45,6 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
             frameDiv.classList.add('control-item');
             frameDiv.textContent = `Frame ${index}`;
             frameDiv.addEventListener('click', () => {
+                document.querySelectorAll('.control-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                // Add 'selected' class to the clicked frameDiv
+                frameDiv.classList.add('selected');
                 sendFrameToServer(index);
                 showFrame(index);
             });
@@ -228,6 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const sortable = new Sortable(maskContainer, {
+        animation: 150,
+        onEnd: (evt) => {
+            const items = Array.from(maskContainer.children);
+            const newOrder = items.map(item => parseInt(item.getAttribute('data-value')));
+            //console.log('Nuevo orden:', newOrder);
+
+            // Aquí puedes manejar la lógica adicional para actualizar el orden en el servidor o en tu aplicación
+        }
+    });
 
     function addOption(value, text, color) {
         const maskItem = document.createElement('div');
@@ -236,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         const itemText = document.createElement('span');
         itemText.textContent = text;
+        itemText.style.fontFamily = 'ProggyClean, monospace'; // Set the font family
     
         const colorButton = document.createElement('button');
         colorButton.classList.add('color-button');

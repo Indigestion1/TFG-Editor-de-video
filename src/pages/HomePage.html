@@ -95,8 +95,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script-->
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
   
 
     <style>
@@ -172,11 +172,17 @@
             display: flex;
             gap: 10px;
             flex: 0.6;
-            max-height: 200px;
+            max-height: 150px;
+        }
+        .bottom-section .segmentation-control {
+            flex: 50;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            padding: 10px;
         }
 
         .bottom-section .timeline {
-            flex: 2;
+            flex: 30;
             background-color: #1f1f1f;
             border-radius: 4px;
             padding: 10px;
@@ -184,7 +190,9 @@
 
         .bottom-section .timeline .mask-item {
             background-color: #333;
-            padding: 8px;
+            padding: 2px;
+            padding-right: 10px;
+            padding-left: 10px;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
@@ -203,22 +211,39 @@
         }
 
         .bottom-section .controls {
-            flex: 1;
+            flex: 20;
             background-color: #1f1f1f;
             border-radius: 4px;
             padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
         
+        @font-face {
+            font-family: 'ProggyClean';
+            src: url('../../fonts/ProggyClean.ttf') format('truetype');
+        }
+
         .bottom-section .controls .control-item {
             background-color: #333;
-            padding: 8px;
+            padding: 4px;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-family: 'ProggyClean', sans-serif;
+
+        }
+        .bottom-section .controls .control-item-selected {
+            background-color: #444;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'ProggyClean', sans-serif;
+            
         }
 
         .bottom-section .controls .control-item:hover {
@@ -245,12 +270,13 @@
         #resultImage {
             width: 95%; /* Ocupa casi todo el ancho del panel */
             /* height: 95%; */
-            background-color: #000; /* Color de fondo para que destaque */
+            background-color: transparent; /* Color de fondo para que destaque */
             border-radius: 4px; /* Opcional, si quieres esquinas redondeadas */
         }
         #framesContainer {
             max-height: 100%; /* Ajusta la altura máxima según sea necesario */
-            overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+            overflow: hidden; /* Habilita la barra de desplazamiento vertical */
+            position: relative
         }
 
         /* Estilo para la barra de desplazamiento vertical */
@@ -311,9 +337,9 @@
         #maskContainer {
             max-height: 100%; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
-            background: #2a2a2a; /* Color de fondo del contenedor */
             border-radius: 10px; /* Esquinas redondeadas */
-            padding: 10px; /* Espaciado interno */
+            padding-right: 10px; /* Espaciado interno */
+            padding-left: 10px;
         }
 
         /* Estilo para la barra de desplazamiento vertical */
@@ -351,6 +377,38 @@
             justify-self: center;
             align-self: center;
         }
+        
+        .info-button-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .info-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            z-index: 1;
+            width: 200px;
+            top: 30px;
+            left: 0;
+            font-family:'ProggyClean', sans-serif;
+            text-align: justify;
+        }
+
+        .info-button-container:hover .info-content {
+            display: block;
+        }
 
     </style>
     </head>
@@ -358,7 +416,14 @@
         <div class="container">
             <!-- Header -->
             <header>
-            <button class="propagte-video" id="propagate_button">▶</button>
+                <button class="propagte-video" id="propagate_button">▶</button>
+                
+                <div class="info-button-container">
+                    <button class="info-button">ℹ️</button>
+                    <div class="info-content">
+                        Las máscaras se pueden ordenar, cada posición es una capa. Las que están primero en la lista se pondrán primero y las que están al final se pondrán por encima
+                    </div>
+                </div>
             </header>
 
             <!-- Main Section -->
@@ -378,6 +443,9 @@
                 <div class="timeline" id="maskContainer">
                     Máscaras
                     <!-- Llista de máscares -->
+                </div>
+                <div class="segmentation-control" id="segmentation-options">
+                    Segmentation settings
                 </div>
                 <div class="controls" id="framesContainer">
                     <div id="loadingSpinner" class="spinner"></div>

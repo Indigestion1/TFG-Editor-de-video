@@ -27,6 +27,7 @@
     "react-color": "^2.19.3",
     "react-dom": "^18.3.1",
     "react-segment-anything": "^1.0.4",
+    "sortablejs": "^1.15.6",
     "tweakpane": "^4.0.5",
     "vanilla-colorful": "^0.7.2"
   }

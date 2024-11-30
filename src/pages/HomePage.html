@@ -1,45 +1,460 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home Page</title>
-        <link rel="stylesheet" href="../styles/themes.css">
+        <link rel="stylesheet" href="../styles/styles.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+        <style>
+            .selectors {
+                font-family: sans-serif;
+                font-size: 14px;
+                /*padding: 5px;*/
+                width: 100%;
+                height: auto;
+            }
+            .bootstrap-select .dropdown-toggle .filter-option {
+                font-family: sans-serif;
+                font-size: 14px;
+                margin-right: 2vw;
+            }
+            .bootstrap-select .dropdown-menu {
+                font-family: sans-serif;
+                font-size: 14px;
+            }
+            .image-container {
+                width: 50vw !important;
+                height: 50vh; /* Altura fija para el contenedor de la imagen en relación con la altura de la pantalla */
+                background-color: #111111; /* Color de fondo */
+                border: 2px solid #f0f0f0; /* Borde */
+                display: flex;
+                margin-top: 10px !important;
+                margin-right: 10px !important;
+            }
+            .image-container img {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+            }
+        </style>
     </head>
     <body class="dark-mode">
         <div class="grid-container">
             <table class="layout-table">
                 <tr>
-                    <td colspan="2" >
-                        <video id="video" class="responsive-video" style="width: 70%; height: auto; " controls>
-                            Your browser does not support the video tag.
-                        </video>
+                    <td colspan="1" class="video-cell">
+                        <canvas id="frameImage" style="width: 100% !important; height: auto;"></canvas>
                     </td>
-                    <td colspan="2" class="video-cell">
-                        <canvas id="frameImage" style="width: 100%; height: auto;">
-                        </canvas>
+                    <td></td>
+                    <td colspan="3" class="image-container">
+                        <img id="resultImage" alt="Result Image">
                     </td>
+                </tr>
+            <tr></tr>
+            <tr>
+                <tr>
+                    <td>
+                        <select id="frameList" class="selectpicker selectors" value=""></select>
+                        <button id="propagate_button">Propagar vídeo</button>
                     </td>
+
+                    <td></td>
+
+                    <td style="text-align: right;">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" id="dropdownButton">Seleccionar Máscaras</button>
+                            <div class="dropdown-menu-mask" id="maskSelectorContainer"></div>
+                        </div>
+                        <!select id="maskSelectorContainer" class="selectpicker selectors" style="font-family: sans-serif; font-size: 10px; padding: 5px; width:70%; height: auto;" value="" title="Seleccione las máscaras" multiple data-live-search="false"></select-->
+                    <!-- </td>
                 </tr>
                 <tr>
                     <td colspan="3">
                         <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
-                    </td>
-                    <td>
-                        <select id="frameList" class="frame-list"></select>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td></td>
-                    <td class="tools-cell">
-                        <div class="controls">
-                        </div>
-                    </td>
-                    <td></td>
+                    </td> 
                 </tr>
             </table>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> >
+        <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+        <script src="HomePage.js"></script>
+    </body>
+</html> --> 
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Video</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+  
+
+    <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        }
+
+        .container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        }
+
+        header {
+        height: 50px;
+        background-color: #1f1f1f;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        border-bottom: 1px solid #333;
+        }
+
+        button#propagate_button {
+            background-color: #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            position: absolute;
+            right: 20px;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        .editor-section {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .editor-section .panel {
+            flex: 1;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .editor-section .panel:nth-child(1) {
+            border-right: 2px solid #333;
+        }
+
+        .bottom-section {
+            display: flex;
+            gap: 10px;
+            flex: 0.6;
+            max-height: 150px;
+        }
+        .bottom-section .segmentation-control {
+            flex: 50;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .bottom-section .timeline {
+            flex: 30;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .bottom-section .timeline .mask-item {
+            background-color: #333;
+            padding: 2px;
+            padding-right: 10px;
+            padding-left: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 7px;
+        }
+
+        .bottom-section .timeline .mask-item:hover {
+            background-color: #444;
+        }
+
+        /* Color de fondo para las máscaras seleccionadas */
+        .mask-item.selected {
+            background-color: #5a5a5a;
+            color: #e0e1dd;
+        }
+
+        .bottom-section .controls {
+            flex: 20;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        @font-face {
+            font-family: 'ProggyClean';
+            src: url('../../fonts/ProggyClean.ttf') format('truetype');
+        }
+
+        .bottom-section .controls .control-item {
+            background-color: #333;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'ProggyClean', sans-serif;
+
+        }
+        .bottom-section .controls .control-item-selected {
+            background-color: #444;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'ProggyClean', sans-serif;
+            
+        }
+
+        .bottom-section .controls .control-item:hover {
+            background-color: #444;
+        }
+        
+        .editor-section .panel {
+            flex: 1;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            overflow: hidden; /* Asegura que el canvas no se desborde */
+        }
+
+        #frameImage {
+            width: 95%; /* Ocupa casi todo el ancho del panel */
+            /* height: 95%; */
+            background-color: #000; /* Color de fondo para que destaque */
+            border-radius: 4px; /* Opcional, si quieres esquinas redondeadas */
+        }
+        #resultImage {
+            width: 95%; /* Ocupa casi todo el ancho del panel */
+            /* height: 95%; */
+            background-color: transparent; /* Color de fondo para que destaque */
+            border-radius: 4px; /* Opcional, si quieres esquinas redondeadas */
+        }
+        #framesContainer {
+            max-height: 100%; /* Ajusta la altura máxima según sea necesario */
+            overflow: hidden; /* Habilita la barra de desplazamiento vertical */
+            position: relative
+        }
+
+        /* Estilo para la barra de desplazamiento vertical */
+        #framesContainer::-webkit-scrollbar {
+            width: 8px; /* Ancho de la barra de desplazamiento */
+        }
+
+        #framesContainer::-webkit-scrollbar-track {
+            background: #2a2a2a; /* Color de fondo del track */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+
+        #framesContainer::-webkit-scrollbar-thumb {
+            background: #4a4a4a; /* Color del pulgar */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+
+        #framesContainer::-webkit-scrollbar-thumb:hover {
+            background: #6a6a6a; /* Color del pulgar al pasar el ratón por encima */
+        }
+        .delete-button {
+            background: none !important;
+            border: none !important;
+            padding-left: 2vw;
+            color: red;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .delete-button:hover {
+            color: darkred;
+        }
+        .color-button {
+            width: 24px !important;
+            height: 24px !important;
+            border: none !important;
+            border-radius: 50% !important;
+            cursor: pointer !important;
+            margin-left: 10px !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        .pickr .pcr-button::before {
+            display: none;
+            background: none !important;
+            border: none !important;
+        }
+        .pickr .pcr-button::after {
+            border: 1px solid #4a4a4a !important;
+            border-radius: 50% !important;
+        }
+
+        .pcr-app{
+            background-color: #1f1f1f !important;
+        }
+
+        #maskContainer {
+            max-height: 100%; /* Ajusta la altura máxima según sea necesario */
+            overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+            border-radius: 10px; /* Esquinas redondeadas */
+            padding-right: 10px; /* Espaciado interno */
+            padding-left: 10px;
+        }
+
+        /* Estilo para la barra de desplazamiento vertical */
+        #maskContainer::-webkit-scrollbar {
+            width: 8px; /* Ancho de la barra de desplazamiento */
+        }
+        #maskContainer::-webkit-scrollbar-track {
+            background: #2a2a2a; /* Color de fondo del track */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #maskContainer::-webkit-scrollbar-thumb {
+            background: #4a4a4a; /* Color del pulgar */
+            border-radius: 10px; /* Esquinas redondeadas */
+        }
+        #maskContainer::-webkit-scrollbar-thumb:hover {
+            background: #5a5a5a; /* Color del pulgar al pasar el ratón */
+        }
+        .spinner {
+            border: 3px solid #6f6f6f; /* Light grey */
+            border-top: 3px solid #bdbdbd; /* Blue */
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #loadingSpinner {
+            display: none;
+        }
+        #loadingSpinner.show {
+            display: flex;
+            justify-self: center;
+            align-self: center;
+        }
+        
+        .info-button-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .info-button {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .info-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            z-index: 1;
+            width: 200px;
+            top: 30px;
+            left: 0;
+            font-family:'ProggyClean', sans-serif;
+            text-align: justify;
+        }
+
+        .info-button-container:hover .info-content {
+            display: block;
+        }
+
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <button class="propagte-video" id="propagate_button">▶</button>
+                
+                <div class="info-button-container">
+                    <button class="info-button">ℹ️</button>
+                    <div class="info-content">
+                        Las máscaras se pueden ordenar, cada posición es una capa. Las que están primero en la lista se pondrán primero y las que están al final se pondrán por encima
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Section -->
+            <div class="main">
+            <!-- Top Editor Section -->
+            <div class="editor-section">
+                <div class="panel" id="video-preview-1">
+                    <canvas id="frameImage"></canvas>
+                </div>
+                <div class="panel" id="video-preview-2">
+                    <canvas id="resultImage"></canvas>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="bottom-section">
+                <div class="timeline" id="maskContainer">
+                    Máscaras
+                    <!-- Llista de máscares -->
+                </div>
+                <div class="segmentation-control" id="segmentation-options">
+                    Segmentation settings
+                </div>
+                <div class="controls" id="framesContainer">
+                    <div id="loadingSpinner" class="spinner"></div>
+                <!-- Llista de frames -->
+                </div>
+            </div>
+            </div>
+        </div>
+        <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
         <script src="HomePage.js"></script>
     </body>
 </html>

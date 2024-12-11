@@ -1,20 +1,3 @@
-
-body.light-mode {
-    background-color: #ffffff;
-    color: #000000;
-}
-
-body.light-mode .homePage {
-    background-color: #f0f0f0;
-    color: #000000;
-}
-
-body.light-mode button {
-    background-color: #dddddd;
-    color: #000000;
-    border: 1px solid #cccccc;
-}
-
 body.dark-mode {
     background-color: #2e2e2e; 
     color: #e0e1dd;
@@ -26,277 +9,435 @@ body.dark-mode .homePage {
 }
 
 body.dark-mode button {
-    background-color: #4a4a4a;
-    color: #4a4a4a;
-}
-
-body.dark-mode button:hover {
-    /*background-color: #5a5a5a;*/
-    border: 1px solid #4a4a4a;
-}
-
-.grid-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-.layout-table {
-    width: 100%;
-    height: 100%;
-    border-collapse: collapse;
-}
-
-.layout-table td {
-    padding: 5px;
-    box-sizing: border-box;
-    width: 33.33%;
-}
-
-.video-cell {
-    justify-content: center;
-    align-items: center;
-    /*display: flex;*/
-}
-
-.responsive-video {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-width: 100%;
-}
-
-.video-track {
-    width: 100%;
-    height: 100px;
-    background-color: none;
-}
-
-.tools-cell {
-    text-align: center;
-}
-
-.controls {
-    display: inline-block;
-    text-align: left;
-}
-
-.controls div {
-    margin-bottom: 10px;
-}
-.modal {
-    display: none; /* Oculto por defecto */
-    position: fixed; /* Fijo en la pantalla */
-    z-index: 1; /* Por encima de otros elementos */
-    left: 0;
-    top: 0;
-    width: 100%; /* Ancho completo */
-    height: 100%; /* Alto completo */
-    overflow: auto; /* Habilitar scroll si es necesario */
-    background-color: black; /* Color de fondo */
-}
-
-.modal-content {
-    background-color: #5a5a5a;
-    margin: 15% auto; /* Centrado vertical y horizontal */
-    padding: 20px;
-    border: 1px solid #4a4a4a;
-    width: 80%; /* Ancho del modal */
-}
-
-.close {
+    background-color: #333;
     color: #ffffff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.h2 {
-    color: #ffffff;
-    text-align: center;
-}
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.selectpicker {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ffffff;
     border-radius: 4px;
-    background-color: #fff;
-    color: #333;
-}
-.selectpicker.selectors {
-    max-height: none !important;
-    /* overflow: visible !important; */
-    position: relative !important;
-    transform: none !important;
-    top: auto !important;
-    left: auto !important;
-}
-.mask-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    color: #5a5a5a;
-    cursor: pointer;
-    background-color: #e0e1dd;
-    transition: background-color 0.3s;
-}
-
-/* Color de fondo al pasar el ratón por encima */
-.mask-item:hover {
-    background-color: #6a6a6a;
-}
-
-/* Color de fondo para las máscaras seleccionadas */
-.mask-item.selected {
-    background-color: #5a5a5a;
-    color: #e0e1dd;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-} 
-
-.dropdown-toggle {
-    background-color: #e0e1dd !important;
-    color: #4a4a4a;
-    border: 1px solid #4a4a4a;
-    padding: 10px;
-    cursor: pointer;
-    border-radius:5px;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    background-color: #e0e1dd !important;
-    border: 1px solid #4a4a4a;
-    padding: 10px;
-    z-index: 1000;
-    max-height: 200px;
-}
-
-
-.dropdown-menu-mask {
-    display: none;
-    position: absolute;
-    width: 100%;
-    padding: 10px;
-    z-index: 1000;
-    max-height: 200px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.dropdown-menu-mask.show {
-    display: block;
-    width: 100%;
-}
-
-.dropdown-menu.show {
-    display: block;
-    width: 100%;
-}
-
-.dropdown-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 5px;
     cursor: pointer;
-    color: #5a5a5a;
-}
+    font-family: proggyClean;
+    margin-left: 15px;
+}  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
 
-.dropdown-item:hover {
-    background-color: #4a4a4a;
-}
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    }
 
-.delete-button {
-    background: none !important;
-    border: none !important;
-    padding-left: 2vw;
-    color: red !important;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-}
+    .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    }
 
-.delete-button:hover {
-    color: darkred;
-}
+    header {
+    height: 50px;
+    background-color: #1f1f1f;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #333;
+    }
 
-/* Estilo para la barra de desplazamiento vertical */
-::-webkit-scrollbar {
-    width: 4px; /* Ancho de la barra de desplazamiento */
-}
+    button#propagate_button {
+        background-color: #333;
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        position: absolute;
+        right: 20px;
+    }
 
-/* Estilo para la pista de la barra de desplazamiento */
-::-webkit-scrollbar-track {
-    background: #e0e1dd; /* Color de fondo de la pista */
-    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
-}
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+    }
 
-/* Estilo para el pulgar de la barra de desplazamiento */
-::-webkit-scrollbar-thumb {
-    background: #6a6a6a; /* Color del pulgar */
-    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
-}
+    .editor-section {
+        flex: 1;
+        display: flex;
+        gap: 10px;
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+    }
 
-/* Estilo para el pulgar de la barra de desplazamiento al pasar el ratón por encima */
-::-webkit-scrollbar-thumb:hover {
-    background: #6a6a6a; /* Color del pulgar al pasar el ratón por encima */
-}
+    .editor-section .panel {
+        flex: 1;
+        background-color: #1f1f1f;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
 
-/* Estilo para la barra de desplazamiento horizontal */
-::-webkit-scrollbar-horizontal {
-    height: 4px; /* Altura de la barra de desplazamiento horizontal */
-}
+    .editor-section .panel:nth-child(1) {
+        border-right: 2px solid #333;
+    }
 
-/* Estilo para la pista de la barra de desplazamiento horizontal */
-::-webkit-scrollbar-track-horizontal {
-    background: #2a2a2a; /* Color de fondo de la pista horizontal */
-    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
-}
+    .bottom-section {
+        display: flex;
+        gap: 10px;
+        flex: 0.6;
+        max-height: 150px;
+    }
+    .bottom-section .segmentation-control {
+        flex: 50;
+        background-color: #1f1f1f;
+        border-radius: 4px;
+        padding: 10px;
+    }
 
-/* Estilo para el pulgar de la barra de desplazamiento horizontal */
-::-webkit-scrollbar-thumb-horizontal {
-    background: #4a4a4a; /* Color del pulgar horizontal */
-    border-radius: 10px; /* Radio de borde para esquinas redondeadas */
-}
+    .bottom-section .timeline {
+        flex: 30;
+        background-color: #1f1f1f;
+        border-radius: 4px;
+        padding: 10px;
+    }
 
-/* Estilo para el pulgar de la barra de desplazamiento horizontal al pasar el ratón por encima */
-::-webkit-scrollbar-thumb-horizontal:hover {
-    background: #6a6a6a; /* Color del pulgar horizontal al pasar el ratón por encima */
-}
-.color-button {
-    width: 24px;
-    height: 24px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-left: 10px;
-    display: inline-block;
-    vertical-align: middle;
-}
+    .bottom-section .timeline .mask-item {
+        background-color: #333;
+        padding: 2px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 7px;
+    }
 
-.pickr .pcr-button::before {
-    display: none;
-    background: none !important;
-    border: none !important;
-}
-.pickr .pcr-button::after {
-    border: 1px solid #4a4a4a !important;
-    border-radius: 50% !important;
-}
+    .bottom-section .timeline .mask-item:hover {
+        background-color: #444;
+    }
 
-.pcr-app{
-    background-color: rgba(255, 255, 255, 1) !important;
-}
+    /* Color de fondo para las máscaras seleccionadas */
+    .mask-item.selected {
+        background-color: #5a5a5a;
+        color: #e0e1dd;
+    }
+
+    .bottom-section .controls {
+        flex: 20;
+        background-color: #1f1f1f;
+        border-radius: 4px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    @font-face {
+        font-family: 'ProggyClean';
+        src: url('../../fonts/ProggyClean.ttf') format('truetype');
+    }
+
+    .bottom-section .controls .control-item {
+        background-color: #333;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'ProggyClean', sans-serif;
+
+    }
+    .bottom-section .controls .control-item.selected {
+        background-color: #606060;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'ProggyClean', sans-serif;
+        
+    }
+
+    .bottom-section .controls .control-item:hover {
+        background-color: #444;
+    }
+    
+    .editor-section .panel {
+        flex: 1;
+        background-color: #1f1f1f;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        overflow: hidden; /* Asegura que el canvas no se desborde */
+    }
+
+    #frameImage {
+        width: 95%; /* Ocupa casi todo el ancho del panel */
+        /* height: 95%; */
+        background-color: #000; /* Color de fondo para que destaque */
+        border-radius: 4px; /* Opcional, si quieres esquinas redondeadas */
+    }
+    #resultImage {
+        width: 95%; /* Ocupa casi todo el ancho del panel */
+        /* height: 95%; */
+        background-color: transparent; /* Color de fondo para que destaque */
+        border-radius: 4px; /* Opcional, si quieres esquinas redondeadas */
+    }
+    #framesContainer {
+        max-height: 100%; /* Ajusta la altura máxima según sea necesario */
+        overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+        position: relative;
+    }
+
+    /* Estilo para la barra de desplazamiento vertical */
+    #framesContainer::-webkit-scrollbar {
+        width: 8px; /* Ancho de la barra de desplazamiento */
+    }
+
+    #framesContainer::-webkit-scrollbar-track {
+        background: #2a2a2a; /* Color de fondo del track */
+        border-radius: 10px; /* Esquinas redondeadas */
+    }
+
+    #framesContainer::-webkit-scrollbar-thumb {
+        background: #4a4a4a; /* Color del pulgar */
+        border-radius: 10px; /* Esquinas redondeadas */
+    }
+
+    #framesContainer::-webkit-scrollbar-thumb:hover {
+        background: #6a6a6a; /* Color del pulgar al pasar el ratón por encima */
+    }
+    .delete-button {
+        background: none !important;
+        border: none !important;
+        padding-left: 2vw;
+        color: #676161;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .delete-button:hover {
+        color: #fbf8f8;
+    }
+    .color-button {
+        width: 24px !important;
+        height: 24px !important;
+        border: none !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        margin-left: 10px !important;
+        display: inline-block !important;
+        vertical-align: middle !important;
+    }
+
+    .pickr .pcr-button::before {
+        display: none;
+        background: none !important;
+        border: none !important;
+    }
+    .pickr .pcr-button::after {
+        border: 1px solid #4a4a4a !important;
+        border-radius: 50% !important;
+    }
+
+    .pcr-app{
+        background-color: #1f1f1f !important;
+    }
+
+    #maskContainer {
+        max-height: 100%; /* Ajusta la altura máxima según sea necesario */
+        overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+        border-radius: 10px; /* Esquinas redondeadas */
+        padding-right: 10px; /* Espaciado interno */
+        padding-left: 10px;
+    }
+
+    /* Estilo para la barra de desplazamiento vertical */
+    #maskContainer::-webkit-scrollbar {
+        width: 8px; /* Ancho de la barra de desplazamiento */
+    }
+    #maskContainer::-webkit-scrollbar-track {
+        background: #2a2a2a; /* Color de fondo del track */
+        border-radius: 10px; /* Esquinas redondeadas */
+    }
+    #maskContainer::-webkit-scrollbar-thumb {
+        background: #4a4a4a; /* Color del pulgar */
+        border-radius: 10px; /* Esquinas redondeadas */
+    }
+    #maskContainer::-webkit-scrollbar-thumb:hover {
+        background: #5a5a5a; /* Color del pulgar al pasar el ratón */
+    }
+    .spinner {
+        border: 3px solid #6f6f6f; /* Light grey */
+        border-top: 3px solid #bdbdbd; /* Blue */
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    #loadingSpinner {
+        display: none;
+    }
+    #loadingSpinner.show {
+        display: flex;
+        margin-top: 50px;
+        margin-left: 50px;
+    }
+    #loadingSpinnerMasks {
+        display: none;
+    }
+    #loadingSpinnerMasks.show {
+        display: flex;
+        position: relative;
+        top: 50px;
+        left: 50px;
+        z-index: 1000;
+    }
+    .index-buttons {
+        display: absolute;
+        margin-top: 200px;
+        margin-left: 200px !important;
+    }
+    #openProjectBtn {
+        margin-top: 100px;
+    }
+    .info-button-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .info-button {
+        background: none;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .info-content {
+        display: none;
+        position: absolute;
+        background-color: #333;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 4px;
+        z-index: 1;
+        width: 200px;
+        top: 30px;
+        left: 0;
+        font-family:'ProggyClean', sans-serif;
+        text-align: justify;
+    }
+
+    .info-button-container:hover .info-content {
+        display: block;
+    }
+    .masks-buttons {
+        background-color: #333;
+        color: #ffffff;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        padding: 5px;
+        cursor: pointer;
+        font-family: proggyClean;
+    }
+    .masks-buttons.selected{
+        background-color: #606060;
+    }
+    #sendFrameButton {
+        margin-top: 15px;
+    }
+    #change_order {
+        margin-left: 15px;
+    }
+
+    .progress-container {
+        width: 50%;
+        background-color: #aeaaaa;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-top: 10px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        display: none;
+    }
+
+    .progress-container.show {
+        display: block;
+    }
+
+    .progress-bar {
+        height: 20px;
+        width: 0;
+        background-color: #3a3a3a;
+        text-align: center;
+        line-height: 20px;
+        color: white;
+        border-radius: 5px;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 999;
+        display: none;
+    }
+
+    .overlay.show {
+        display: block;
+    }
+
+    #frameImage.positive-cursor {
+        cursor: crosshair;
+        cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0iZ3JlZW4iIC8+Cjwvc3ZnPg==') 4 4, crosshair;
+    }
+
+    #frameImage.negative-cursor {
+        cursor: crosshair;
+       cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0icmVkIiAvPgo8L3N2Zz4=') 4 4, crosshair;
+
+    }
+    .point {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: fadeOut 1s forwards;
+    }
+
+    .point.positive {
+        background-color: green;
+    }
+
+    .point.negative {
+        background-color: red;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }

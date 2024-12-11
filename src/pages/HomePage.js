@@ -1,16 +1,16 @@
 //const { ipcRenderer } = require('electron');
 //import Tweakpane from 'https://cdn.jsdelivr.net/npm/tweakpane@3.0.0/dist/tweakpane.min.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.classList.add(`${savedTheme}-mode`);
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     const savedTheme = localStorage.getItem('theme') || 'dark';
+//     document.body.classList.add(`${savedTheme}-mode`);
+// });
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('videoTrackCanvas');
     const context = canvas.getContext('2d');
     const frames = [];
-    //const maskSelectorContainer = document.getElementById('maskContainer');
+    const changeOrderButton = document.getElementById('change_order');
     const frameImage = document.getElementById('frameImage');
     const context2 = frameImage.getContext('2d');
     const propagate_button = document.getElementById('propagate_button');
@@ -18,15 +18,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const maskContainer = document.getElementById('maskContainer');
     const canvasResult = document.getElementById('resultImage');
     const context3 = canvasResult.getContext('2d');
+    const sendFrameButton = document.getElementById('sendFrameButton');
+    const positiveButton = document.getElementById('positive_points');
+    const negativeButton = document.getElementById('negative_points');
+    const predict_image = document.getElementById('predict_image');
+    const replace_frame = document.getElementById('replace_frame');
+    const progressBar = document.getElementById('progressBar');
+    const progressContainer = document.querySelector('.progress-container');
+    //const overlay = document.getElementById('overlay');
+    var clean_mask_container = false;
     var natural_width;
     var natural_height;
     var frameIndex = 0;
     var first = true;
     var masks;
     var numMasks = 0;
+    var selected = false;
+    var positive = true;
+    var positive_points = [];
+    var negative_points = [];
     //var maskIndex = 0;
-
+    positiveButton.classList.add('selected');
+    frameImage.classList.add('positive-cursor');
     propagate_button.addEventListener('click', () => {
+        progressContainer.classList.add('show');
+        //overlay.classList.add('show');
+        const totalFrames = frames.length;
+        const updateProgress = () => {
+            fetch('http://localhost:5000/processedFrames')
+                .then(response => response.json())
+                .then(data => {
+                    const processedFrames = data.processed_frames;
+                    const percentage = (processedFrames / totalFrames) * 100;
+                    progressBar.style.width = `${percentage}%`;
+                    progressBar.textContent = `${Math.round(percentage)}%`;
+                    if (processedFrames < totalFrames) {
+                        setTimeout(updateProgress, 5000);
+                    } else {
+                        progressContainer.classList.remove('show');
+                        //overlay.classList.remove('show');
+                    }
+                });
+        };
+        updateProgress();
+
         fetch('http://localhost:5000/propagate_segmentation', {
             method: 'POST',
             headers: {
@@ -35,6 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
             body: JSON.stringify({ video_path: `../TFG-Editor-de-video/data/Videos`, image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg` })
         })
         .then(response => response.json())
+        .then(data => {
+            progressContainer.classList.remove('show');
+            //overlay.classList.remove('show');
+        })
+        .catch(error => console.error('Error during propagation:', error));
     });
     
     const updateControls = () => {
@@ -44,13 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const frameDiv = document.createElement('div');
             frameDiv.classList.add('control-item');
             frameDiv.textContent = `Frame ${index}`;
+            if (selected) {
+                selected = false;
+                frameDiv.classList.add('selected');
+            }
             frameDiv.addEventListener('click', () => {
                 document.querySelectorAll('.control-item').forEach(item => {
                     item.classList.remove('selected');
                 });
                 // Add 'selected' class to the clicked frameDiv
                 frameDiv.classList.add('selected');
-                sendFrameToServer(index);
                 showFrame(index);
             });
             controlsContainer.appendChild(frameDiv);
@@ -89,9 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 100);
                     if(first) { 
                         first = false;
-                        sendFrameToServer(0);
+                        selected = true;
+
                         showFrame(0);
-                    }
+                        sendFrameToServer(0)}
                 };
                 capture();
             });
@@ -99,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const sendFrameToServer = async (index) => {
+        const loadingSpinner = document.getElementById('loadingSpinnerMasks');
+        loadingSpinner.classList.add('show');
         try {
             const response = await fetch('http://localhost:5000/addFrame', {
                 method: 'POST',
@@ -106,7 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ image_path: `../TFG-Editor-de-video/data/Videos\\${index}.jpeg` })
-            }).then(response => get_masks(`../TFG-Editor-de-video/data/Videos\\${index}.jpeg`));
+            })
+            const data = await response.json();
+            loadingSpinner.classList.remove('show');
         } catch (error) {
             console.error('Error sending frame to server:', error);
         }
@@ -129,6 +177,14 @@ document.addEventListener('DOMContentLoaded', () => {
         img.onerror = () => {
             console.error('Failed to load frame image');
         };
+        try {
+            get_masks(`../TFG-Editor-de-video/data/Videos\\${index}.jpeg`);
+        }
+        catch (error) {
+            loadingSpinner.classList.remove('show');
+            maskContainer.innerHTML = '';
+            maskContainer.appendChild(loadingSpinner);
+        }
     };
 
 
@@ -145,18 +201,41 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Electron object is not available');
     }
 
-    frameImage.addEventListener('click', () => {
+    frameImage.addEventListener('click', (event) => {
         const rect = frameImage.getBoundingClientRect();
         const scaleX = natural_width / rect.width;
         const scaleY = natural_height / rect.height;
         const x = (event.clientX - rect.left) * scaleX;
         const y = (event.clientY - rect.top) * scaleY;
+        if (positive) {
+            positive_points.push([x, y]);
+        } else {
+            negative_points.push([x, y]);
+        }
+
+        // Create visual feedback
+        const point = document.createElement('div');
+        point.classList.add('point');
+        point.classList.add(positive ? 'positive' : 'negative');
+        point.style.left = `${event.clientX}px`;
+        point.style.top = `${event.clientY}px`;
+        document.body.appendChild(point);
+
+        // Remove the point after animation
+        point.addEventListener('animationend', () => {
+            point.remove();
+        });
+    });
+
+    predict_image.addEventListener('click', () => {
         const imagePath =  `../TFG-Editor-de-video/data/Videos\\` + frameIndex + '.jpeg';
         const data = {
-            x: x,
-            y: y,
+            positive_points: positive_points,
+            negative_points: negative_points,
             image_path: imagePath
         }
+        // Remove all points
+        document.querySelectorAll('.point').forEach(point => point.remove());
         fetch('http://localhost:5000/predictImage', {
             method: 'POST',
             headers: {
@@ -180,12 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
         
                 apply_Mask(mode=false, data2);
+                positive_points = [];
+                negative_points = [];
           })
           .catch((error) => {
               console.error('Error loading image:', error);
           });
     })
-
 
     maskContainer.addEventListener('click', (event) => {
         const maskItem = event.target.closest('.mask-item');
@@ -337,6 +417,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function get_masks(image_path) {
+        const loadingSpinner = document.getElementById('loadingSpinnerMasks');
+        loadingSpinner.classList.add('show');
         fetch(`http://localhost:5000/mask?image_path=${image_path}`, {
             method: 'GET',
             headers: {
@@ -345,15 +427,34 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            masks = data.masks;
-            numMasks = masks.length;
-            maskContainer.innerHTML = '';
-            masks.forEach((mask, index) => {
-                const color = mask[0]; // Obtener el color de la máscara
-                addOption(index, `Máscara ${index + 1}`, color);
-            });
+            
+            if (!data.error) {
+                loadingSpinner.classList.remove('show');
+                console.log(data);
+                masks = data.masks;
+                numMasks = masks.length;
+                maskContainer.innerHTML = ''; // Reset the container but keep the title
+                maskContainer.appendChild(loadingSpinner); // Re-append the spinner
+                masks.forEach((mask, index) => {
+                    const color = mask[0]; // Obtener el color de la máscara
+                    addOption(index, `Máscara ${index + 1}`, color);
+                });
+            } else {
+                if(clean_mask_container) {
+                    loadingSpinner.classList.remove('show');
+                    maskContainer.innerHTML = '';
+                    maskContainer.appendChild(loadingSpinner);
+                } else{
+                    clean_mask_container = true;
+                }
+                
+            }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(() => {
+            loadingSpinner.classList.remove('show');
+            maskContainer.innerHTML = '';
+            maskContainer.appendChild(loadingSpinner);
+        });
     }
     
     function deleteMask(maskId) {
@@ -428,5 +529,73 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading image:', error);
         });
     }
-        
+
+    changeOrderButton.addEventListener('click', () => {
+        const selectedMasks = Array.from(maskContainer.querySelectorAll('.mask-item.selected'))
+                .map(item => parseInt(item.getAttribute('data-value')));
+        const data = {
+            image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`,
+            masks: selectedMasks
+        }
+        fetch('http://localhost:5000/change_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if (response.ok) {
+                get_masks(data.image_path);
+            } else {
+                console.error('Error al cambiar el orden de las máscaras:', response.statusText);
+            }
+        });
+    });
+    sendFrameButton.addEventListener('click', () => {
+        const loadingSpinner = document.getElementById('loadingSpinnerMasks');
+        loadingSpinner.classList.add('show');
+        sendFrameToServer(frameIndex).then(() => {
+            loadingSpinner.classList.remove('show');
+        }).catch((error) => {
+            console.error('Error sending frame to server:', error);
+            loadingSpinner.classList.remove('show');
+        });
+    });
+
+    positiveButton.addEventListener('click', () => {
+        positive = true;
+        positiveButton.classList.add('selected');
+        negativeButton.classList.remove('selected');
+        frameImage.classList.add('positive-cursor');
+        frameImage.classList.remove('negative-cursor');
+    });
+    negativeButton.addEventListener('click', () => {
+        positive = false;
+        negativeButton.classList.add('selected');
+        positiveButton.classList.remove('selected');
+        frameImage.classList.add('negative-cursor');
+        frameImage.classList.remove('positive-cursor');
+    });
+    replace_frame.addEventListener('click', () => {
+        const data = {
+            image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`
+        }
+        fetch('http://localhost:5000/replaceFrame', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => response.json())
+        .then(response => {
+            if (response.error) {
+                console.error('Error replacing frame:', response.error);
+            } else {
+                console.log('Frame replaced successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error replacing frame:', error);
+        });
+    });
 });

@@ -8,12 +8,13 @@
     </head>
     <body class="dark-mode"> <!-- Añade la clase dark-mode aquí para probar -->
         <div class="index">
-            <button id="newProjectBtn">Nuevo Proyecto</button>
-            <button id="openProjectBtn">Abrir Proyecto</button>
+            <!--img src="app_images/new_project.png" alt="New Project"-->
+            <button class="index-buttons" id="newProjectBtn">Nuevo Proyecto</button>
+            <!--img src="app_images/load_project.png" alt="Open Project"-->
+            <button class="index-buttons" id="openProjectBtn">Abrir Proyecto</button>
             <!-- Add more elements as described above -->
         </div>
         <script>
-            console.log(window.electron); // Debería mostrar el objeto electron en la consola
             document.getElementById('newProjectBtn').addEventListener('click', () => {
                 window.electron.send('onNewProject');
             });

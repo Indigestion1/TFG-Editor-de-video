@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const replace_frame = document.getElementById('replace_frame');
     const progressBar = document.getElementById('progressBar');
     const progressContainer = document.querySelector('.progress-container');
-    //const overlay = document.getElementById('overlay');
+    const overlay = document.getElementById('overlay');
+    const download_video = document.getElementById('download_video');
+    const loadingSpinnerOverlay = document.getElementById('loadingSpinnerOverlay');
     var clean_mask_container = false;
     var natural_width;
     var natural_height;
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     frameImage.classList.add('positive-cursor');
     propagate_button.addEventListener('click', () => {
         progressContainer.classList.add('show');
-        //overlay.classList.add('show');
+        overlay.classList.add('show');
         const totalFrames = frames.length;
         const updateProgress = () => {
             fetch('http://localhost:5000/processedFrames')
@@ -56,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(updateProgress, 5000);
                     } else {
                         progressContainer.classList.remove('show');
-                        //overlay.classList.remove('show');
+                        overlay.classList.remove('show');
                     }
                 });
         };
@@ -72,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             progressContainer.classList.remove('show');
-            //overlay.classList.remove('show');
+            overlay.classList.remove('show');
         })
         .catch(error => console.error('Error during propagation:', error));
     });
@@ -596,6 +598,24 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error replacing frame:', error);
+        });
+    });
+    download_video.addEventListener('click', () => {
+        overlay.classList.add('show');
+        loadingSpinnerOverlay.classList.add('show');
+        fetch('http://localhost:5000/download_video', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            overlay.classList.remove('show');
+            loadingSpinnerOverlay.classList.remove('show');
+        }).catch(error => {
+            console.error('Error downloading video:', error);
+            overlay.classList.remove('show');
+            loadingSpinnerOverlay.classList.remove('show');
         });
     });
 });

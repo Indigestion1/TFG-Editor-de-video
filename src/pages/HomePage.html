@@ -28,6 +28,7 @@
                 <button class="masks-buttons" id="positive_points" style="margin-left: 15px;">+</button>
                 <button class="masks-buttons" id="negative_points" style="margin-left: 15px;">-</button>
                 <button class="masks-buttons" id="predict_image" style="margin-left: 15px;">Poner máscara</button>
+                <button class="masks-buttons" id="sendFrameButton" style="margin-left: 15px;">Cargar imagen</button>
                 <button class="masks-buttons" id="download_video" style="margin-left: 15px;">Descargar vídeo</button>
                 <button class="masks-buttons" id="replace_frame" style="position: absolute; margin-left: 15px; right: 90px;">Sustituir frame</button>
             </header>
@@ -51,10 +52,19 @@
                     <!-- Llista de màscares -->
                 </div>
                 <div class="segmentation-control" id="segmentation-options">
-                    <button class="masks-buttons" id="sendFrameButton">Cargar imagen</button>
-                    <div class="contourSliderContainer">
-                        <input type="range" id="segmentationSlider" min="0" max="10" step="0.5" value="5">
+                    <div class="checkboxContainer">
+                        <input type="checkbox" id="applyVideo">
+                        <label for="applyVideo">Aplicar en el vídeo</label>
                     </div>
+                    <div class="contourSliderContainer"> Grosor del sombreado
+                        <input type="range" class="segmentationSlider" id="segmentationSlider" min="0" max="10" step="0.5" value="5" oninput="updateSliderValue()">
+                        <span id="sliderValue" class="slider-value">5</span>
+                    </div>
+                    <div class="checkboxContainer">
+                        <input type="checkbox" id="drawFace">
+                        <label for="drawFace">Añadir cara</label>
+                    </div>
+                    <button class="masks-buttons" id="simplifyButton" style="margin-top: 10px;">Aplicar cambios</button> 
                 </div>
                 <div class="controls" id="framesContainer">
                     <div id="loadingSpinner" class="spinner"></div>
@@ -73,5 +83,14 @@
         </div>
         <canvas id="videoTrackCanvas" class="video-track" style="display: none;"></canvas>
         <script src="HomePage.js"></script>
+        <script>
+            function updateSliderValue() {
+                var slider = document.getElementById("segmentationSlider");
+                var output = document.getElementById("sliderValue");
+                output.innerHTML = slider.value;
+                slider.style.setProperty('--value', (slider.value - slider.min) / (slider.max - slider.min) * 100 + '%');
+            }
+            updateSliderValue(); // Inicializa el valor del slider
+        </script>
     </body>
 </html>

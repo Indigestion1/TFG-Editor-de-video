@@ -1,10 +1,3 @@
-//const { ipcRenderer } = require('electron');
-//import Tweakpane from 'https://cdn.jsdelivr.net/npm/tweakpane@3.0.0/dist/tweakpane.min.js';
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     const savedTheme = localStorage.getItem('theme') || 'dark';
-//     document.body.classList.add(`${savedTheme}-mode`);
-// });
 
 document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('videoTrackCanvas');
@@ -25,7 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const replace_frame = document.getElementById('replace_frame');
     const progressBar = document.getElementById('progressBar');
     const progressContainer = document.querySelector('.progress-container');
-    //const overlay = document.getElementById('overlay');
+    const overlay = document.getElementById('overlay');
+    const download_video = document.getElementById('download_video');
+    const loadingSpinnerOverlay = document.getElementById('loadingSpinnerOverlay');
+    const contourSlider = document.getElementById('segmentationSlider');
+    const drawFace = document.getElementById('drawFace');
+    const simplifyButton = document.getElementById('simplifyButton');
+    const applyVideo = document.getElementById('applyVideo');
     var clean_mask_container = false;
     var natural_width;
     var natural_height;
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     frameImage.classList.add('positive-cursor');
     propagate_button.addEventListener('click', () => {
         progressContainer.classList.add('show');
-        //overlay.classList.add('show');
+        overlay.classList.add('show');
         const totalFrames = frames.length;
         const updateProgress = () => {
             fetch('http://localhost:5000/processedFrames')
@@ -56,23 +55,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(updateProgress, 5000);
                     } else {
                         progressContainer.classList.remove('show');
-                        //overlay.classList.remove('show');
+                        overlay.classList.remove('show');
                     }
                 });
         };
+        if(!applyVideo.checked) {
+            body = JSON.stringify({ video_path: `../TFG-Editor-de-video/data/Videos`, image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg` });
+        }
+        else {
+            body = JSON.stringify({ video_path: `../TFG-Editor-de-video/data/Videos`, image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`, simplify: true, contour_shadow: contourSlider.value, draw_face: drawFace.checked });
+        }
         updateProgress();
-
         fetch('http://localhost:5000/propagate_segmentation', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ video_path: `../TFG-Editor-de-video/data/Videos`, image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg` })
+            body: body
         })
         .then(response => response.json())
         .then(data => {
             progressContainer.classList.remove('show');
-            //overlay.classList.remove('show');
+            overlay.classList.remove('show');
         })
         .catch(error => console.error('Error during propagation:', error));
     });
@@ -596,6 +600,52 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error replacing frame:', error);
+        });
+    });
+    download_video.addEventListener('click', () => {
+        overlay.classList.add('show');
+        loadingSpinnerOverlay.classList.add('show');
+        fetch('http://localhost:5000/download_video', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            overlay.classList.remove('show');
+            loadingSpinnerOverlay.classList.remove('show');
+        }).catch(error => {
+            console.error('Error downloading video:', error);
+            overlay.classList.remove('show');
+            loadingSpinnerOverlay.classList.remove('show');
+        });
+    });
+    simplifyButton.addEventListener('click', () => {
+        
+        fetch('http://localhost:5000/simplifyMasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                image_path: `../TFG-Editor-de-video/data/Videos\\${frameIndex}.jpeg`,
+                contour_shadow: contourSlider.value,
+                draw_face: drawFace.checked
+            })
+        }).then(response => response.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.src = url;
+            img.onload = () => {
+                context3.clearRect(0, 0, frameImage.width, frameImage.height);
+                canvasResult.width = img.width;
+                canvasResult.height = img.height;
+                context3.drawImage(img, 0, 0, canvasResult.width, canvasResult.height);
+            };
+        })
+        .catch(error => {
+            console.error('Error simplifying masks:', error);
         });
     });
 });

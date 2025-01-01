@@ -11,7 +11,6 @@ body.dark-mode .homePage {
 body.dark-mode button {
     background-color: #333;
     color: #ffffff;
-    border: 1px solid #ffffff;
     border-radius: 4px;
     padding: 5px;
     cursor: pointer;
@@ -50,7 +49,6 @@ body.dark-mode button {
         height: 40px;
         border-radius: 4px;
         color: #ffffff;
-        border: 1px solid #ffffff;
         position: absolute;
         right: 20px;
     }
@@ -150,6 +148,7 @@ body.dark-mode button {
         justify-content: space-between;
         align-items: center;
         font-family: 'ProggyClean', sans-serif;
+        font-size: 14px;
 
     }
     .bottom-section .controls .control-item.selected {
@@ -160,6 +159,7 @@ body.dark-mode button {
         justify-content: space-between;
         align-items: center;
         font-family: 'ProggyClean', sans-serif;
+        font-size: 14px;
         
     }
 
@@ -305,9 +305,8 @@ body.dark-mode button {
         z-index: 1000;
     }
     .index-buttons {
-        display: absolute;
-        margin-top: 200px;
-        margin-left: 200px !important;
+        margin-top: 500px;
+        margin-left: 600px !important;
     }
     #openProjectBtn {
         margin-top: 100px;
@@ -346,7 +345,6 @@ body.dark-mode button {
     .masks-buttons {
         background-color: #333;
         color: #ffffff;
-        border: 1px solid #ffffff;
         border-radius: 4px;
         padding: 5px;
         cursor: pointer;
@@ -354,9 +352,6 @@ body.dark-mode button {
     }
     .masks-buttons.selected{
         background-color: #606060;
-    }
-    #sendFrameButton {
-        margin-top: 15px;
     }
     #change_order {
         margin-left: 15px;
@@ -405,6 +400,23 @@ body.dark-mode button {
         display: block;
     }
 
+    .loading-spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        display: none;
+    }
+
+    .loading-spinner-overlay.show {
+        display: flex;
+    }
+
     #frameImage.positive-cursor {
         cursor: crosshair;
         cursor: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0iZ3JlZW4iIC8+Cjwvc3ZnPg==') 4 4, crosshair;
@@ -440,4 +452,119 @@ body.dark-mode button {
         100% {
             opacity: 0;
         }
+    }
+    .contourSliderContainer {
+        color: #ffffff;
+        font-family: proggyClean;
+        padding-top: 15px;
+        font-size: 14px; /* Tamaño de fuente reducido */
+    }
+    .segmentationSlider {
+        width: 80%; /* Ajusta el ancho del slider */
+        margin: 10px auto; /* Centra el slider horizontalmente */
+        background: #2a2a2a;
+        color: #4a4a4a;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 5px;
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity .2s;
+    }
+
+    .segmentationSlider:hover {
+        opacity: 1;
+    }
+
+    .segmentationSlider::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        background: #4a4a4a;
+        border-radius: 5px;
+    }
+
+    .segmentationSlider::-moz-range-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        background: #4a4a4a;
+        border-radius: 5px;
+    }
+
+    .segmentationSlider::-ms-track {
+        width: 100%;
+        height: 5px;
+        cursor: pointer;
+        background: #4a4a4a;
+        border-radius: 5px;
+        border-color: transparent;
+        color: transparent;
+    }
+
+    .segmentationSlider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #e0e1dd;
+        cursor: pointer;
+        margin-top: -5px; /* Centra la bola verticalmente */
+    }
+
+    .segmentationSlider::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #e0e1dd;
+        cursor: pointer;
+    }
+
+    .segmentationSlider::-ms-thumb {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #e0e1dd;
+        cursor: pointer;
+    }
+
+    .segmentationSlider::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #4a4a4a 0%, #4a4a4a var(--value), #2a2a2a var(--value), #2a2a2a 100%);
+    }
+
+    .segmentationSlider::-moz-range-progress {
+        background: #4a4a4a;
+    }
+
+    .segmentationSlider::-moz-range-track {
+        background: #2a2a2a;
+    }
+
+    .segmentationSlider::-ms-fill-lower {
+        background: #4a4a4a;
+    }
+
+    .segmentationSlider::-ms-fill-upper {
+        background: #2a2a2a;
+    }
+
+    .slider-value {
+        font-size: 14px;
+        color: #e0e1dd;
+        margin-left: 10px;
+    }
+
+    .checkboxContainer {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        color: #e0e1dd;
+        font-family: proggyClean;
+        font-size: 14px;
+    }
+
+    .checkboxContainer input[type="checkbox"] {
+        margin-right: 10px;
     }

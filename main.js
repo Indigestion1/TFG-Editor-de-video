@@ -26,7 +26,7 @@ function createWindow() {
     mainWindow.loadFile('index.html');
 
     //debugging
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.on('did-finish-load', () => {
         const theme = 'dark'; // Default theme
